@@ -4,14 +4,14 @@ from dotenv import load_dotenv
 import os
 
 def get_spotify_client():
-    # load .env vars
+    """Authenticate with Spotify and return a client instance."""
     load_dotenv()
 
     client_id = os.getenv("SPOTIPY_CLIENT_ID")
     client_secret = os.getenv("SPOTIPY_CLIENT_SECRET")
     redirect_uri = os.getenv("SPOTIPY_REDIRECT_URI")
 
-    scope = "user-read-private"  # basic scope just to test
+    scope = "playlist-read-private user-read-private"
 
     sp = spotipy.Spotify(auth_manager=SpotifyOAuth(
         client_id=client_id,
@@ -21,3 +21,9 @@ def get_spotify_client():
     ))
 
     return sp
+
+def extract_playlist_id(url: str) -> str:
+    """Pull playlist ID from a Spotify playlist URL."""
+    if "playlist/" in url:
+        return url.split("playlist/")[1].split("?")[0]
+    return url
